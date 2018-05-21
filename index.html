@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="theme.css" type="text/css">
+  <title>CrackHash --基于Nebulas的Hash悬赏破解平台</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-md bg-primary navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <i class="fa d-inline fa-lg fa-cloud"></i>
+        <b> CrackHash</b>
+      </a>
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fa d-inline fa-lg fa-envelope-o"></i> 2982883282@qq.com</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="h-30 py-4 h-20">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 bg-light border border-success">
+          <div class="col-md-12">
+            <form class="">
+              <div class="form-group">
+                <label class="control-label">在此提交您想破解的Hash值</label>
+                <br>
+                <label>Hash值</label>
+                <input type="text" id="hashvalue" class="form-control" placeholder="Enter hash value">
+                <!--<small class="form-text text-muted">We'll never share your text with anyone else.</small>-->
+              </div>
+              <div class="form-inline">
+                <label class="control-label">Hash类型&nbsp;&nbsp;</label>
+                <div class="controls">
+                  <select class="input-xlarge" id="type1">
+                    <option value="MD5">MD5</option>
+                    <option value="SHA1">SHA1</option>
+                    <option value="未知">未知</option>
+                  </select>
+                </div>
+              </div>
+              <br>
+              <div class="form-inline">
+                <label for="exampleInputEmail1">悬赏金额&nbsp;&nbsp;</label>
+                <input type="text" class="form-control text-left w-25" id="nasvalue" placeholder="NAS">
+                <label for="exampleInputEmail1">&nbsp;NAS</label>
+              </div>
+              <br>
+              <button type="submit" id="askfor" onclick="dealaskforbutton();return false;" class="btn btn-primary">悬赏破解</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-md-6 bg-light border border-success">
+          <form class="">
+            <div class="form-group">
+              <label class="control-label">在此提交您破解出的Hash值</label>
+              <br>
+              <label>Hash值</label>
+              <input type="text" id="hashvalue2" class="form-control" placeholder="Enter hash value">
+              <!--<small class="form-text text-muted">We'll never share your text with anyone else.</small>-->
+            </div>
+            <div class="form-inline">
+              <label class="control-label">Hash类型&nbsp;&nbsp;</label>
+              <div class="controls">
+                <select class="input-xlarge" id="type2">
+                  <option>MD5</option>
+                  <option>SHA1</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>明文值</label>
+              <input type="text" id="ptext" class="form-control" placeholder="Enter plaintext">
+              <!--<small class="form-text text-muted">We'll never share your text with anyone else.</small>-->
+            </div>
+            <!--<input type="password" class="form-control" placeholder="Password">-->
+            <button type="submit" id="contribution" onclick="dealconbutton();return false;" class="btn btn-primary">提交结果</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="h-5 py-1">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <label class="control-label text-center text-success my-1 py-1 w-100">悬赏破解列表</label>
+        </div>
+        <div class="col-md-6">
+          <label class="control-label text-center text-success my-1 py-1 w-100">破解成功列表</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="h-75 py-2" id="div3">
+    <div class="container">
+      <div class="row h-100" id="div0">
+        <div class="col-md-6" id="div1"></div>
+        <div class="col-md-6" id="div2"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <pingendo onclick="window.open('https://nebulas.io/', '_blank')" style="cursor:pointer;position: fixed;bottom: 10px;right:10px;padding:4px;background-color: #00b0eb;border-radius: 8px; width:250px;display:flex;flex-direction:row;align-items:center;justify-content:center;font-size:14px;color:white">Powered By Nebulas&nbsp;&nbsp;
+    <!--<img src="https://pingendo.com/site-assets/Pingendo_logo_big.png" class="d-block" alt="Pingendo logo" height="16">-->
+  </pingendo>
+  <!--<script src=lib/jquery-3.3.1.min.js></script>-->
+  <script src="https://cdn.bootcss.com/js-sha1/0.6.0/sha1.js"></script>
+  <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+  <script src="lib/nebPay.js"></script>
+  <script src="lib/nebulas.js"></script>
+  <script>
+    var dappAddress = "n1tCm3djEef9jvD5DZpMHm72qsJTiaZehuj";
+    	var nebulas = require("nebulas"),Account = nebulas.Account,neb = new nebulas.Neb();
+        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+    	//定义加载列表的函数
+    	async function getasklist(){
+    		var from = Account.NewAccount().getAddressString();
+    		//alert(from);
+            var value = "0";
+            var nonce = "0";
+            var gas_price = "1000000";
+            var gas_limit = "2000000";
+            var callFunction = "getasklist";
+    		var callArgs = "[]";//"[\"" + hashvalue + "\"]";
+    		var contract = {
+                "function": callFunction,
+                "args": callArgs
+            };
+    		//alert(1);
+            var asklist = await neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+    			return resp;
+            }).catch(function (err) {
+                console.log("error:" + err.message)
+            });
+    		callFunction = "getcontributionlist";
+    		var contract = {
+                "function": callFunction,
+                "args": callArgs
+            };
+    		var conlist = await neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+    			return resp;
+            }).catch(function (err) {
+                console.log("error:" + err.message)
+            });
+    		//alert(JSON.parse(asklist.result)[0][1]);
+    		//alert(JSON.parse(conlist.result)[0][1]);
+    		asklist = JSON.parse(asklist.result);
+    		conlist = JSON.parse(conlist.result);
+    		//alert(asklist.length);
+    		var str = "";
+    		str+="<table class=\"table table-striped\" contenteditable=\"true\" id=\"asklisttable\">";
+    		str+="<thead><tr><th>hash值</th><th>类型</th><th>悬赏金额(NAS)</th></tr></thead><tbody id=\"tbody\">";
+    		var conhash = new Array();
+    		for (var j=0;j<conlist.length;j++){
+    			conhash.push(conlist[j][0]);
+    		}
+    		//alert(conhash);
+    		for(var i=0;i<asklist.length;i++){
+				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>"+asklist[i][2]*1e-18+"</td></tr>";
+				/*
+    			if (conhash.indexOf(asklist[i][0]) != -1)
+    				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>yes</td></tr>";
+    			else
+    				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>no</td></tr>";*/
+    
+    		}
+    		//alert(1);
+			str+="</tbody></table>";
+    		var div1=document.getElementById("div1");
+    		//alert(str);
+    		div1.innerHTML=str;
+    		
+    		var str2 = "";
+    		str2+="<table class=\"table table-striped\" contenteditable=\"true\" id=\"asklisttable\">";
+    		str2+="<thead><tr><th>hash值</th><th>类型</th><th>获得奖金(NAS)</th></tr></thead><tbody id=\"tbody\">";
+    		for(var i=0;i<conlist.length;i++){
+    			str2 += "<tr><td>"+conlist[i][0]+"</td><td>"+conlist[i][1]+"</td><td>"+conlist[i][2]*1e-18+"</td></tr>";
+    		}
+			str2 +="</tbody></table>";
+    		var div2=document.getElementById("div2");
+    		//alert(str2);
+    		div2.innerHTML = str2;
+    		}
+    		//调用加载列表的函数
+    		getasklist();
+    		//document.getElementById("div3").attr("disabled",false);
+    	function checkaskforhash(hashvalue,hashtype){ //检测输入的合法性
+    		if (hashvalue.length == 0)
+    		{
+    			alert("Hash值不能为空！");
+    			return 0;
+    		}
+    		if ((hashtype.toLowerCase()=="md5" && hashvalue.length != 32) || (hashtype.toLowerCase()=="sha1" && hashvalue.length != 40) || hashvalue.length >128)
+    		{
+    			alert("选择的Hash算法和Hash值长度不匹配！");
+    			return 0;
+    		}
+    		var hexc = '0123456789abcdef';
+    		var hashvalue = hashvalue.toLowerCase(); 
+    		for (var i=0;i<hashvalue.length;i++){
+    			if (hexc.indexOf(hashvalue.charAt(i)) == -1)
+    			{
+    				alert("输入的Hash值存在非法字符！");
+    				return 0;
+    			}
+    		}
+    		return 1;
+    	}
+    	
+    	function checkconhash(hashvalue,type,ptext){ //检测输入的合法性
+    		if (type.toLowerCase()=="md5")
+    		{
+    			if (md5(ptext)!=hashvalue)
+    				{
+    					alert("Hash值和明文值不匹配！");
+    					return 0;
+    				}
+    		}
+    		
+    		if (type.toLowerCase()=="sha1")
+    		{
+    			if (sha1(ptext)!=hashvalue)
+    				{
+    					alert("Hash值和明文值不匹配！");
+    					return 0;
+    				}
+    		}
+    		
+    		return 1;
+    	}
+    
+    	var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+    	var nebPay = new NebPay();
+    	var serialNumber;
+    		
+    	var intervalQuery;
+        function funcIntervalQuery() {
+            nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
+                .then(function (resp) {
+                    console.log("tx result: " + resp)   //resp is a JSON string
+                    var respObject = JSON.parse(resp)
+                    if(respObject.code === 0){
+                        alert("提交成功！");
+                        clearInterval(intervalQuery)
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+    
+    	async function dealaskforbutton(){  //请求协助按钮的处理函数
+    		var hashv = document.getElementById("hashvalue").value;
+			//
+    		//alert(hashv);
+    		var type = $("#type1").val();
+    		if(checkaskforhash(hashv,type) == 0) //检查输入是否合法
+    			return ;
+    		
+    		var from = Account.NewAccount().getAddressString();
+            var value = "0";
+            var nonce = "0";
+            var gas_price = "1000000";
+            var gas_limit = "2000000";
+            var callFunction = "search";
+    		var hashvalue = hashv //"e2fc714c4727ee9395f324cd2e7f331f";
+    		var callArgs = "[\"" + hashv + "\"]";
+    		var contract = {
+                "function": callFunction,
+                "args": callArgs
+            };
+    		const resp =  await neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+    			return resp;
+            }).catch(function (err) {
+                console.log("error:" + err.message)
+            });
+    		if(JSON.parse(resp.result).crack_flag == 1){
+    			var ptext = JSON.parse(resp.result).decoded_value;
+    			var contributor = JSON.parse(resp.result).submitter;
+    			alert("该Hash值已被破解！\n明文为:"+ptext+"\n贡献者为:"+contributor);
+    			return ;
+    		}
+    		else if (JSON.parse(resp.result).crack_flag == 0){
+    			alert("该Hash值已被提交，目前还未被破解！");
+    			return ;
+    		}
+    		//提交到区块链
+			var nasv = document.getElementById("nasvalue").value;
+			var value = nasv;
+    		callArgs = "[\"" + hashv +"\",\""+type+ "\"]";
+    		callFunction = "askforhelp";
+    		//alert(callArgs);
+            serialNumber = nebPay.call(dappAddress, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: showres        //设置listener, 处理交易返回信息
+            });
+    
+            intervalQuery = setInterval(function () {
+                funcIntervalQuery();
+            }, 5000);
+    		
+    	}
+    		
+    	async function dealconbutton(){ //提交贡献处理函数
+    		var hashv = document.getElementById("hashvalue2").value;
+    		var type = document.getElementById("type2").value;
+    		var plaintext = document.getElementById("ptext").value;
+    		if (checkconhash(hashv,type,plaintext) == 0)
+    			return ;
+    		//alert("yes");
+    		//查看该Hash是否被提交过
+    		var from = Account.NewAccount().getAddressString();
+            var value = "0";
+            var nonce = "0";
+            var gas_price = "1000000";
+            var gas_limit = "2000000";
+            var callFunction = "search";
+    		var hashvalue = hashv //"e2fc714c4727ee9395f324cd2e7f331f";
+    		var callArgs = "[\"" + hashv + "\"]";
+    		var contract = {
+                "function": callFunction,
+                "args": callArgs
+            };
+    		const resp =  await neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
+    			return resp;
+            }).catch(function (err) {
+                console.log("error:" + err.message)
+            });
+    		if(JSON.parse(resp.result).crack_flag == 1){
+    			var ptext = JSON.parse(resp.result).decoded_value;
+    			var contributor = JSON.parse(resp.result).submitter;
+    			alert("该Hash值的破解结果已被提交过！\n明文为:"+ptext+"\n贡献者为:"+contributor+"\n请提交其他破解结果。");
+    			return ;
+    		}
+    		//提交到区块链
+            callFunction = "contribution";
+            callArgs = "[\"" + hashvalue +"\",\""+type +"\",\""+plaintext+ "\"]";
+    		//alert(callArgs);
+            serialNumber = nebPay.call(dappAddress, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: showres        //设置listener, 处理交易返回信息
+            });
+            intervalQuery = setInterval(function () {
+                funcIntervalQuery();
+            }, 5000);
+    		
+    	}
+    	function showres(){}
+  </script>
+</body>
+
+</html>
