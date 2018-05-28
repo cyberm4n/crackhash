@@ -164,7 +164,7 @@
     		conlist = JSON.parse(conlist.result);
     		//alert(asklist.length);
     		var str = "";
-    		str+="<table class=\"table table-striped\" contenteditable=\"true\" id=\"asklisttable\">";
+    		str+="<table class=\"table table-striped\" contenteditable=\"false\" id=\"asklisttable\">";
     		str+="<thead><tr><th>hash值</th><th>类型</th><th>悬赏金额(NAS)</th></tr></thead><tbody id=\"tbody\">";
     		var conhash = new Array();
     		for (var j=0;j<conlist.length;j++){
@@ -172,7 +172,7 @@
     		}
     		//alert(conhash);
     		for(var i=0;i<asklist.length;i++){
-				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>"+asklist[i][2]*1e-18+"</td></tr>";
+				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>"+(asklist[i][2]*1e-18).toFixed(4)+"</td></tr>";
 				/*
     			if (conhash.indexOf(asklist[i][0]) != -1)
     				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>yes</td></tr>";
@@ -187,10 +187,10 @@
     		div1.innerHTML=str;
     		
     		var str2 = "";
-    		str2+="<table class=\"table table-striped\" contenteditable=\"true\" id=\"asklisttable\">";
+    		str2+="<table class=\"table table-striped\" contenteditable=\"false\" id=\"asklisttable\">";
     		str2+="<thead><tr><th>hash值</th><th>类型</th><th>获得奖金(NAS)</th></tr></thead><tbody id=\"tbody\">";
     		for(var i=0;i<conlist.length;i++){
-    			str2 += "<tr><td>"+conlist[i][0]+"</td><td>"+conlist[i][1]+"</td><td>"+conlist[i][2]*1e-18+"</td></tr>";
+    			str2 += "<tr><td>"+conlist[i][0]+"</td><td>"+conlist[i][1]+"</td><td>"+(conlist[i][2]*1e-18).toFixed(4)+"</td></tr>";
     		}
 			str2 +="</tbody></table>";
     		var div2=document.getElementById("div2");
