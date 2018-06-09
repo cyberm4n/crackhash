@@ -123,70 +123,49 @@
   <script src="https://cdn.bootcss.com/js-sha1/0.6.0/sha1.js"></script>
   <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
   <script src="lib/nebPay.js"></script>
-  <script src="lib/nebulas.js"></script>
   <script>
-    var dappAddress = "n1tCm3djEef9jvD5DZpMHm72qsJTiaZehuj";
-    	var nebulas = require("nebulas"),Account = nebulas.Account,neb = new nebulas.Neb();
-        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+		var dappAddress = "n1tCm3djEef9jvD5DZpMHm72qsJTiaZehuj";//"n1iJ9kLKoGwsbEHFwBXKGzoZ7BbndLkt5HZ";//"n1tCm3djEef9jvD5DZpMHm72qsJTiaZehuj";
+		var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
+    	var nebPay = new NebPay();
+		var serialNumber;
+		//var callbackUrl = NebPay.config.mainnetUrl;
     	//定义加载列表的函数
-    	async function getasklist(){
-    		var from = Account.NewAccount().getAddressString();
-    		//alert(from);
-            var value = "0";
-            var nonce = "0";
-            var gas_price = "1000000";
-            var gas_limit = "2000000";
+		function getasklist(){
+			var to = dappAddress;
+            var value = 0;
             var callFunction = "getasklist";
-    		var callArgs = "[]";//"[\"" + hashvalue + "\"]";
-    		var contract = {
-                "function": callFunction,
-                "args": callArgs
-            };
-    		//alert(1);
-            var asklist = await neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
-    			return resp;
-            }).catch(function (err) {
-                console.log("error:" + err.message)
+            var callArgs = "[]";
+            nebPay.simulateCall(to, value, callFunction, callArgs, {
+                listener: listener1  //set listener for extension transaction result
             });
-    		callFunction = "getcontributionlist";
-    		var contract = {
-                "function": callFunction,
-                "args": callArgs
-            };
-    		var conlist = await neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
-    			return resp;
-            }).catch(function (err) {
-                console.log("error:" + err.message)
+		}
+		function getcontributionlist(){
+			var to = dappAddress;
+            var value = 0;
+            var callArgs = "[]";
+			callFunction = "getcontributionlist";
+			nebPay.simulateCall(to, value, callFunction, callArgs, {
+                listener: listener2  //set listener for extension transaction result
             });
-    		//alert(JSON.parse(asklist.result)[0][1]);
-    		//alert(JSON.parse(conlist.result)[0][1]);
-    		asklist = JSON.parse(asklist.result);
-    		conlist = JSON.parse(conlist.result);
-    		//alert(asklist.length);
-    		var str = "";
+		}
+		function listener1(resp) {
+            console.log("resp: " + JSON.stringify(resp))
+			asklist = JSON.parse(resp.result);
+			var str = "";
     		str+="<table class=\"table table-striped\" contenteditable=\"false\" id=\"asklisttable\">";
     		str+="<thead><tr><th>hash值</th><th>类型</th><th>悬赏金额(NAS)</th></tr></thead><tbody id=\"tbody\">";
-    		var conhash = new Array();
-    		for (var j=0;j<conlist.length;j++){
-    			conhash.push(conlist[j][0]);
-    		}
-    		//alert(conhash);
     		for(var i=0;i<asklist.length;i++){
 				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>"+(asklist[i][2]*1e-18).toFixed(4)+"</td></tr>";
-				/*
-    			if (conhash.indexOf(asklist[i][0]) != -1)
-    				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>yes</td></tr>";
-    			else
-    				str += "<tr><td>"+asklist[i][0]+"</td><td>"+asklist[i][1]+"</td><td>no</td></tr>";*/
-    
-    		}
-    		//alert(1);
+				}
 			str+="</tbody></table>";
     		var div1=document.getElementById("div1");
-    		//alert(str);
     		div1.innerHTML=str;
-    		
-    		var str2 = "";
+        }
+		
+		function listener2(resp) {
+            console.log("resp: " + JSON.stringify(resp))
+			conlist = JSON.parse(resp.result);
+			var str2 = "";
     		str2+="<table class=\"table table-striped\" contenteditable=\"false\" id=\"asklisttable\">";
     		str2+="<thead><tr><th>hash值</th><th>类型</th><th>获得奖金(NAS)</th></tr></thead><tbody id=\"tbody\">";
     		for(var i=0;i<conlist.length;i++){
@@ -194,12 +173,11 @@
     		}
 			str2 +="</tbody></table>";
     		var div2=document.getElementById("div2");
-    		//alert(str2);
     		div2.innerHTML = str2;
     		}
     		//调用加载列表的函数
     		getasklist();
-    		//document.getElementById("div3").attr("disabled",false);
+			getcontributionlist();
     	function checkaskforhash(hashvalue,hashtype){ //检测输入的合法性
     		if (hashvalue.length == 0)
     		{
@@ -245,9 +223,6 @@
     		return 1;
     	}
     
-    	var NebPay = require("nebpay");     //https://github.com/nebulasio/nebPay
-    	var nebPay = new NebPay();
-    	var serialNumber;
     		
     	var intervalQuery;
         function funcIntervalQuery() {
@@ -255,10 +230,13 @@
                 .then(function (resp) {
                     console.log("tx result: " + resp)   //resp is a JSON string
                     var respObject = JSON.parse(resp)
-                    if(respObject.code === 0){
+                    if(respObject.code === 0 && respObject.data.status === 1){
+						window.location.reload();
                         alert("提交成功！");
-                        clearInterval(intervalQuery)
+                        clearInterval(intervalQuery);
+						
                     }
+					
                 })
                 .catch(function (err) {
                     console.log(err);
@@ -267,30 +245,21 @@
     
     	async function dealaskforbutton(){  //请求协助按钮的处理函数
     		var hashv = document.getElementById("hashvalue").value;
-			//
-    		//alert(hashv);
     		var type = $("#type1").val();
     		if(checkaskforhash(hashv,type) == 0) //检查输入是否合法
     			return ;
-    		
-    		var from = Account.NewAccount().getAddressString();
-            var value = "0";
-            var nonce = "0";
-            var gas_price = "1000000";
-            var gas_limit = "2000000";
-            var callFunction = "search";
-    		var hashvalue = hashv //"e2fc714c4727ee9395f324cd2e7f331f";
+    		var to = dappAddress;
+			var callFunction = "search";
+            var value = 0;
     		var callArgs = "[\"" + hashv + "\"]";
-    		var contract = {
-                "function": callFunction,
-                "args": callArgs
-            };
-    		const resp =  await neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
-    			return resp;
-            }).catch(function (err) {
-                console.log("error:" + err.message)
+			var r = nebPay.simulateCall(to, value, callFunction, callArgs, {
+                listener: listener3  //set listener for extension transaction result
             });
-    		if(JSON.parse(resp.result).crack_flag == 1){
+    	}
+		    		
+			function listener3(resp){
+			console.log("resp: " + JSON.stringify(resp));
+			if(JSON.parse(resp.result).crack_flag == 1){
     			var ptext = JSON.parse(resp.result).decoded_value;
     			var contributor = JSON.parse(resp.result).submitter;
     			alert("该Hash值已被破解！\n明文为:"+ptext+"\n贡献者为:"+contributor);
@@ -300,21 +269,26 @@
     			alert("该Hash值已被提交，目前还未被破解！");
     			return ;
     		}
+			
     		//提交到区块链
+			var hashv = document.getElementById("hashvalue").value;
+    		var type = $("#type1").val();
 			var nasv = document.getElementById("nasvalue").value;
 			var value = nasv;
+			var to = dappAddress;
     		callArgs = "[\"" + hashv +"\",\""+type+ "\"]";
     		callFunction = "askforhelp";
     		//alert(callArgs);
+			//alert(1);
             serialNumber = nebPay.call(dappAddress, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
                 listener: showres        //设置listener, 处理交易返回信息
             });
     
             intervalQuery = setInterval(function () {
                 funcIntervalQuery();
-            }, 5000);
+            }, 3000);
+			}
     		
-    	}
     		
     	async function dealconbutton(){ //提交贡献处理函数
     		var hashv = document.getElementById("hashvalue2").value;
@@ -322,25 +296,20 @@
     		var plaintext = document.getElementById("ptext").value;
     		if (checkconhash(hashv,type,plaintext) == 0)
     			return ;
-    		//alert("yes");
+    		
     		//查看该Hash是否被提交过
-    		var from = Account.NewAccount().getAddressString();
+			var to = dappAddress;
             var value = "0";
-            var nonce = "0";
-            var gas_price = "1000000";
-            var gas_limit = "2000000";
             var callFunction = "search";
     		var hashvalue = hashv //"e2fc714c4727ee9395f324cd2e7f331f";
     		var callArgs = "[\"" + hashv + "\"]";
-    		var contract = {
-                "function": callFunction,
-                "args": callArgs
-            };
-    		const resp =  await neb.api.call(from,dappAddress,value,nonce,gas_price,gas_limit,contract).then(function (resp) {
-    			return resp;
-            }).catch(function (err) {
-                console.log("error:" + err.message)
+
+    		nebPay.simulateCall(to, value, callFunction, callArgs, {
+                listener: listener4  //set listener for extension transaction result
             });
+			}
+			
+			function listener4(resp){
     		if(JSON.parse(resp.result).crack_flag == 1){
     			var ptext = JSON.parse(resp.result).decoded_value;
     			var contributor = JSON.parse(resp.result).submitter;
@@ -348,16 +317,22 @@
     			return ;
     		}
     		//提交到区块链
+			var hashv = document.getElementById("hashvalue2").value;
+			var hashvalue = hashv;
+    		var type = document.getElementById("type2").value;
+    		var plaintext = document.getElementById("ptext").value;
+			var to = dappAddress;
+            var value = "0";
             callFunction = "contribution";
             callArgs = "[\"" + hashvalue +"\",\""+type +"\",\""+plaintext+ "\"]";
     		//alert(callArgs);
-            serialNumber = nebPay.call(dappAddress, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
                 listener: showres        //设置listener, 处理交易返回信息
             });
             intervalQuery = setInterval(function () {
                 funcIntervalQuery();
-            }, 5000);
-    		
+            }, 3000);
+    		//window.location.reload();
     	}
     	function showres(){}
   </script>
