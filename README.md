@@ -1,10 +1,11 @@
-﻿Crack Hash  基于Nebulas的Hash悬赏破解平台
+CrackHash  基于Nebulas的Hash悬赏破解平台
 
 合约地址：n1tCm3djEef9jvD5DZpMHm72qsJTiaZehuj
 
 1、项目介绍
 	作为一个网络安全从业者，经常需要破解一些Hash值。该项目旨在打造一个基于Nebulas的Hash悬赏破解平台（最强大的cmd5.com是付费查询，没有悬赏功能）。作为第一个版本，已经实现了MD5和SHA1两种Hash的查询、校验、悬赏、贡献
 	功能。在使用该平台时，请安装Nebulas钱包的Chrome插件。
+	该项目使用nebpay.js来实现交互，这也是官方推荐的方法，经过三次迭代，目前使用体验提高了不少。
 2、使用说明
 		将要查询的Hash值填入悬赏破解部分，选择对应的Hash算法，不清楚的选“未知”，点击悬赏破解后，区块链上如有该Hash的破解
 	结果，将返回给用户；如果该Hash值未被提交过，则会进入提交环节。
@@ -19,4 +20,4 @@
 		
 温馨提示：
   尊敬的项目审核者，测试该项目时，悬赏和破解请使用正确的hash值和明文，否则无法提交。
-  hash 2a9d119df47ff993b662a8ef36f9ea20 的明文为p4ssw0rd,可用于提交破解的测试。
+  hash eba7aa43d165fc6bf49c0549a8a55d35 的明文为ilovechina,可用于提交破解的测试。
